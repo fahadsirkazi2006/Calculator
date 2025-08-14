@@ -9,35 +9,61 @@
 <body>
     <div class="calculator">
         <div class="display">
+            <div class="memory-display" id="memoryDisplay">M: 0</div>
             <div class="display-previous" id="previousDisplay"></div>
             <div class="display-main" id="currentDisplay">0</div>
         </div>
         
         <div class="buttons">
+            <!-- First Row -->
             <button class="clear" onclick="clearAll()">AC</button>
             <button class="clear" onclick="clearEntry()">CE</button>
+            <button class="assign" onclick="assignmentOperator('+=')" title="Add to Memory">+=</button>
+            <button class="assign" onclick="assignmentOperator('-=')" title="Subtract from Memory">-=</button>
+            <button class="assign" onclick="assignmentOperator('*=')" title="Multiply Memory">*=</button>
+            
+            <!-- Second Row -->
+            <button class="assign" onclick="assignmentOperator('/=')" title="Divide Memory">/=</button>
+            <button class="assign" onclick="memoryStore()">MS</button>
+            <button class="assign" onclick="memoryRecall()">MR</button>
+            <button class="assign" onclick="memoryClear()">MC</button>
             <button class="operator" onclick="inputOperator('/')" title="Divide">÷</button>
+            
+            <!-- Third Row -->
+            <button class="special" onclick="checkEven()">Even</button>
+            <button class="special" onclick="checkOdd()">Odd</button>
+            <button class="special" onclick="checkPrime()">Prime</button>
+            <button class="special" onclick="reverseNumber()">Rev</button>
             <button class="operator" onclick="inputOperator('*')" title="Multiply">×</button>
             
+            <!-- Fourth Row -->
             <button onclick="inputNumber('7')">7</button>
             <button onclick="inputNumber('8')">8</button>
             <button onclick="inputNumber('9')">9</button>
+            <button class="assign" onclick="inputOperator('%')" title="Modulo">%</button>
             <button class="operator" onclick="inputOperator('-')" title="Subtract">−</button>
             
+            <!-- Fifth Row -->
             <button onclick="inputNumber('4')">4</button>
             <button onclick="inputNumber('5')">5</button>
             <button onclick="inputNumber('6')">6</button>
+            <button class="assign" onclick="inputOperator('^')" title="Power">^</button>
             <button class="operator" onclick="inputOperator('+')" title="Add">+</button>
             
+            <!-- Sixth Row -->
             <button onclick="inputNumber('1')">1</button>
             <button onclick="inputNumber('2')">2</button>
             <button onclick="inputNumber('3')">3</button>
-            <button class="equals" onclick="calculate()" rowspan="2" title="Equals">=</button>
+            <button class="special" onclick="squareRoot()">√</button>
+            <button class="equals" onclick="calculate()" title="Equals">=</button>
             
+            <!-- Seventh Row -->
             <button class="zero" onclick="inputNumber('0')">0</button>
             <button onclick="inputDecimal()">.</button>
+            <button class="special" onclick="factorial()">x!</button>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>

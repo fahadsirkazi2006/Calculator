@@ -1,12 +1,15 @@
-// Calculator state variables
+
+        // Calculator state variables
         let currentInput = '0';
         let previousInput = '';
         let operator = '';
         let waitingForNewNumber = false;
+        let memory = 0;
 
         // DOM elements
         const currentDisplay = document.getElementById('currentDisplay');
         const previousDisplay = document.getElementById('previousDisplay');
+        const memoryDisplay = document.getElementById('memoryDisplay');
 
         // Update the display
         function updateDisplay() {
@@ -17,6 +20,8 @@
             } else {
                 previousDisplay.textContent = '';
             }
+            
+            memoryDisplay.textContent = `M: ${memory}`;
         }
 
         // Format numbers for display
@@ -34,6 +39,8 @@
                 case '-': return '−';
                 case '*': return '×';
                 case '/': return '÷';
+                case '%': return '%';
+                case '^': return '^';
                 default: return '';
             }
         }
@@ -111,6 +118,12 @@
                     }
                     result = prev / current;
                     break;
+                case '%':
+                    result = prev % current;
+                    break;
+                case '^':
+                    result = Math.pow(prev, current);
+                    break;
                 default:
                     return null;
             }
@@ -157,12 +170,139 @@
             updateDisplay();
         }
 
+        // Memory Functions
+        function memoryStore() {
+            memory = parseFloat(currentInput) || 0;
+            updateDisplay();
+        }
+
+        function memoryRecall() {
+            currentInput = String(memory);
+            waitingForNewNumber = false;
+            updateDisplay();
+        }
+
+        function memoryClear() {
+            memory = 0;
+            updateDisplay();
+        }
+
+        // Assignment Operators
+        function assignmentOperator(op) {
+            const currentValue = parseFloat(currentInput) || 0;
+            
+            switch(op) {
+                case '+=':
+                    memory += currentValue;
+                    break;
+                case '-=':
+                    memory -= currentValue;
+                    break;
+                case '*=':
+                    memory *= currentValue;
+                    break;
+                case '/=':
+                    if (currentValue === 0) {
+                        alert('Error: Cannot divide by zero');
+                        return;
+                    }
+                    memory /= currentValue;
+                    break;
+            }
+            
+            // Round to avoid floating point precision issues
+            memory = Math.round(memory * 1000000000000) / 1000000000000;
+            
+            // Show the result in current display
+            currentInput = String(memory);
+            waitingForNewNumber = true;
+            updateDisplay();
+        }
+
+        // Special Functions
+        function checkEven() {
+            const num = parseInt(currentInput);
+            if (isNaN(num)) {
+                alert('Please enter a valid number');
+                return;
+            }
+            const result = (num % 2 === 0) ? 'Even' : 'Not Even';
+            alert(`${num} is ${result}`);
+        }
+
+        function checkOdd() {
+            const num = parseInt(currentInput);
+            if (isNaN(num)) {
+                alert('Please enter a valid number');
+                return;
+            }
+            const result = (num % 2 !== 0) ? 'Odd' : 'Not Odd';
+            alert(`${num} is ${result}`);
+        }
+
+        function checkPrime() {
+            const num = parseInt(currentInput);
+            if (isNaN(num) || num < 2) {
+                alert('Please enter a valid number >= 2');
+                return;
+            }
+            
+            function isPrime(n) {
+                if (n < 2) return false;
+                if (n === 2) return true;
+                if (n % 2 === 0) return false;
+                for (let i = 3; i <= Math.sqrt(n); i += 2) {
+                    if (n % i === 0) return false;
+                }
+                return true;
+            }
+            
+            const result = isPrime(num) ? 'Prime' : 'Not Prime';
+            alert(`${num} is ${result}`);
+        }
+
+        function reverseNumber() {
+            const num = currentInput.toString();
+            const reversed = num.split('').reverse().join('');
+            currentInput = reversed;
+            waitingForNewNumber = false;
+            updateDisplay();
+        }
+
+        function squareRoot() {
+            const num = parseFloat(currentInput);
+            if (isNaN(num) || num < 0) {
+                alert('Cannot calculate square root of negative number');
+                return;
+            }
+            currentInput = String(Math.sqrt(num));
+            waitingForNewNumber = true;
+            updateDisplay();
+        }
+
+        function factorial() {
+            const num = parseInt(currentInput);
+            if (isNaN(num) || num < 0 || num > 20) {
+                alert('Please enter a non-negative integer <= 20');
+                return;
+            }
+            
+            function fact(n) {
+                if (n <= 1) return 1;
+                return n * fact(n - 1);
+            }
+            
+            currentInput = String(fact(num));
+            waitingForNewNumber = true;
+            updateDisplay();
+        }
+
         // Keyboard support
         document.addEventListener('keydown', function(event) {
             const key = event.key;
             
             // Prevent default behavior for calculator keys
-            if ('0123456789+-*/.='.includes(key) || key === 'Enter' || key === 'Escape' || key === 'Backspace') {
+            if ('0123456789+-*/.=^%'.includes(key) || key === 'Enter' || key === 'Escape' || key === 'Backspace') {
                 event.preventDefault();
             }
             
@@ -183,6 +323,12 @@
             }
             else if (key === '/') {
                 inputOperator('/');
+            }
+            else if (key === '%') {
+                inputOperator('%');
+            }
+            else if (key === '^') {
+                inputOperator('^');
             }
             
             // Decimal
@@ -206,3 +352,4 @@
 
         // Initialize display
         updateDisplay();
+    
